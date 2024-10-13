@@ -155,4 +155,5 @@ def calculate_mass_and_volume():
     })
 
 if __name__ == '__main__':
+    print('Running')
     app.run(debug=True)
