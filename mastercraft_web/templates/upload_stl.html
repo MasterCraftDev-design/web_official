@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STL File Upload</title>
+</head>
+<body>
+    <h2>Upload STL File and Select Material</h2>
+    <form id="stlForm" action="/calculate" method="POST" enctype="multipart/form-data">
+        <label for="file">Choose STL file:</label>
+        <input type="file" id="file" name="file" accept=".stl" required><br><br>
+
+        <label for="material">Select material:</label>
+        <select id="material" name="material_id">
+            <option value="1">ABS</option>
+            <option value="2" selected>PLA</option>
+            <option value="3">3k CFRP</option>
+            <option value="4">Plexiglass</option>
+            <option value="5">Alumide</option>
+            <option value="6">Aluminum</option>
+            <option value="7">Brass</option>
+            <option value="8">Bronze</option>
+            <option value="9">Copper</option>
+            <option value="10">Gold_14K</option>
+            <option value="11">Gold_18K</option>
+            <option value="12">Polyamide_MJF</option>
+            <option value="13">Polyamide_SLS</option>
+            <option value="14">Rubber</option>
+            <option value="15">Silver</option>
+            <option value="16">Steel</option>
+            <option value="17">Titanium</option>
+            <option value="18">Resin</option>
+        </select><br><br>
+
+        <button type="submit">Upload and Calculate</button>
+    </form>
+
+    <h3 id="result"></h3>
+    <img id="stlImage" alt="STL Preview" style="display: none;">
+
+    <script>
+        document.getElementById('stlForm').onsubmit = async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            
+            const response = await fetch(this.action, {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                document.getElementById('result').textContent = 
+                    `Total Volume: ${result.total_volume_cm3} cm³, Total Mass: ${result.total_mass_g} g`;
+                
+                const imageUrl = result.image_url;
+                document.getElementById('stlImage').src = imageUrl;
+                document.getElementById('stlImage').style.display = 'block';
+            } else {
+                document.getElementById('result').textContent = `Error: ${result.error}`;
+                document.getElementById('stlImage').style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>
